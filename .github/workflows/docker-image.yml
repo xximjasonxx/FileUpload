@@ -1,0 +1,21 @@
+name: FileUpload Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: The version tag to create
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker -t xximjasonxx/fileupload:v${{ github.events.inputs.version }} build .
+      
+    - name: Publish Docker Image
+      run: |
+        docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password ${{ secrets.DOCKER_HUB_PASSWORD }}
+        docker push xximjasonxx/fileupload:v${{ github.events.inputs.version }}
